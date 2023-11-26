@@ -1,5 +1,5 @@
 
-int board_initBoard(void); //보드 초기화 
+void board_initBoard(void); //보드 초기화 
 int board_printBoardStatus(void); //전체 보드의 상태 출력 
 
 int board_getBoardCoin(int pos); //동전 습득 명령 

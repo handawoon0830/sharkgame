@@ -29,16 +29,18 @@ static int board_status[N_BOARD];
 static int board_coin[N_BOARD];
 
 static int board_shark_position;
+static int shark_position;
 
 static int game_end(void);
 static int getAlivePlayer(void);
 static int getWinner(void);
 
+
 void board_initBoard(void){
 	int i;
 	for (i=0; i<N_BOARD; i++)
 	{
-		board_status[i]=0;
+		board_status[i]=BOARDSTATUS_OK;
 		board_coin[i]=0;
 	}
 	
@@ -46,18 +48,12 @@ void board_initBoard(void){
 	
 	for (i=0; i<N_COINPOS; i++)
 	{
-		int j;	
-		do{
-			
-			j= 1+ rand()%N_BOARD;
-			if (board_coin[j] != 0 ){
-				board_coin[j] = 1+ rand()%N_COINPOS;
-				break;
-			}
+		int j;
+		j= rand()%N_BOARD;
+		while(board_coin[j] ==0){
+			board_coin[j]= 1+ rand()%MAX_COIN;
 		}
-		while (board_coin[j] == 0);
 	}
-	
 }
 int board_printBoardStatus(void){
 	int i;
@@ -68,7 +64,7 @@ int board_printBoardStatus(void){
 		if (board_status[i] == BOARDSTATUS_NOK)
 			printf("X");
 		else
-			printf("0");
+			printf("O");
 			
 	}
 	printf("|\n");
@@ -77,7 +73,6 @@ int board_printBoardStatus(void){
 int board_getBoardCoin(int pos){
 	int coin;
 	coin = 0;
-	
 	if (board_coin[pos] != 0);
 		coin += board_coin[pos];
 		board_coin[pos] = 0;
@@ -95,33 +90,28 @@ int board_stepShark(void){
 	shark_position += pos;
 }
 int board_getBoardStatus(int pos){
-	/*
-	if (board_coin[pos] != 0);
-		coin += board_coin[pos];
-		board_coin[pos] = 0;
-	 } 
-	 */
+	return board_status[pos];
 }
 
  void printPlayerPosition(int player)
  {
-	int i;
+	int j;
 	 	
-	for(i=0; i<N_BOARD; i++)
+	for(j=0; j<N_BOARD; j++)
 	{
 	 	printf("|");
 	 		
-	 	if (player_position[player] == i)
-	 		printf("%c", player_name[player][i]);
+	 	if (player_position[player] == j)
+	 		printf("%s", player_name[player]);
 	 	else
 	 	{
-	 		if (board_getBoardStatus(i) == BOARDSTATUS_NOK)
+	 		if (board_getBoardStatus(j) == BOARDSTATUS_NOK)
 	 			printf("X");
 	 		else
 	 			printf(" ");
 		}
-		 printf("|\n");
 	}
+	printf("|\n");
 }
 
 void printPlayerStatus(void)
@@ -139,14 +129,13 @@ void printPlayerStatus(void)
 int game_end(void)
 {
 	int i;
-	int flag_end=1;
+	int flag_end=0;
 	
 	for (i=0; i<N_PLAYER; i++)
 	{
-		if (player_status[i]== PLAYERSTATUS_LIVE)
+		if (player_status[i]!= PLAYERSTATUS_LIVE)
 		{
-			flag_end=0;
-			break;
+			flag_end=1;
 		}
 	}
 	return flag_end;

@@ -5,6 +5,9 @@
 #include "board.c"
 
 #define MAX_DIE		6
+#define PLAYERSTATUS_LIVE		0
+#define PLAYERSTATUS_DIE		1
+#define PLAYERSTATUS_END		2
  
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 int rolldie(void)
@@ -27,7 +30,7 @@ void checkDie(void){
 	for(i=0; i<N_PLAYER; i++){
 		if (board_status[player_position[i]] == BOARDSTATUS_NOK)
 			player_status[i] == PLAYERSTATUS_DIE;
-			printf("%s in pos %d has died!! (coin %d)", player_name[i], player_position[i], player_coin[i]);
+			printf("%s in pos %d has died!! (coin %d)\n", player_name[i], player_position[i], player_coin[i]);
 	}
 }
 int main(int argc, char *argv[]) {
@@ -42,7 +45,7 @@ int main(int argc, char *argv[]) {
 		player_position[i]=0;
 		player_coin[i]=0;
 		player_status[i] = PLAYERSTATUS_LIVE;
-		printf("Player %i's name: ", i);
+		printf("Player %d's name: ", i);
 		scanf("%s", player_name[i]);
 	} 
 	
@@ -51,11 +54,12 @@ int main(int argc, char *argv[]) {
 	
 	int turn=0;
 	int flag_end;
+	flag_end=0;
+	int coinResult;
+	coinResult = 0;
 	
 	do{
 		board_printBoardStatus();
-		int coinResult;
-		coinResult = 0;
 		
 		//2-1. 플레이어 상태 출력
 		printPlayerStatus();
@@ -73,13 +77,13 @@ int main(int argc, char *argv[]) {
 		 //2-3. 이동
 		//pos += step;
 		player_position[turn] += dieResult;
-			if (player_position[turn]>=N_BOARD-1)
-			{
-				printf("%s reached to the end!!!", player_name[turn]);
-				player_status[turn]= PLAYERSTATUS_END;
-			}
+		if (player_position[turn]>13)
+		{
+			printf("%s reached to the end!!!", player_name[turn]);
+			player_status[turn]= PLAYERSTATUS_END;
+		}
 				
-		printf("Die result : %d, %s moved to %d", dieResult, player_name[turn],player_position[turn]);
+		printf("Die result : %d, %s moved to %d\n", dieResult, player_name[turn],player_position[turn]);
 		
 		 //2-4. 동전 줍기
 		int pos= player_position[turn];
@@ -117,7 +121,7 @@ int main(int argc, char *argv[]) {
 			getAlivePlayer();
 			getWinner();
 		}
-	} while (flag_end == 1);
+	} while (flag_end == 0);
 	  
 	ending();
 	return 0;
