@@ -30,7 +30,7 @@ void checkDie(void){
 	for(i=0; i<N_PLAYER; i++){
 		if (board_status[player_position[i]] == BOARDSTATUS_NOK)
 			player_status[i] == PLAYERSTATUS_DIE;
-			printf("%s in pos %d has died!! (coin %d)\n", player_name[i], player_position[i], player_coin[i]);
+			printf("%s in pos %d has died!! (coin %d)", player_name[i], player_position[i], player_coin[i]);
 	}
 }
 int main(int argc, char *argv[]) {
@@ -116,13 +116,10 @@ int main(int argc, char *argv[]) {
 		}
 		
 		game_end();
-		if (flag_end ==1)
-		{
-			getAlivePlayer();
-			getWinner();
-		}
-	} while (flag_end == 0);
-	  
+	}while ( player_statusString[player_status[0]]== "LIVE" &&  player_statusString[player_status[1]]== "LIVE" &&  player_statusString[player_status[2]]== "LIVE");
+	
+	getAlivePlayer();
+	getWinner();
 	ending();
 	return 0;
 	
